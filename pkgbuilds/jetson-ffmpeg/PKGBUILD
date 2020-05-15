@@ -6,7 +6,7 @@ arch=('aarch64')
 license=('GPL')
 url="https://github.com/jocover/jetson-ffmpeg"
 makedepends=('git' 'cmake')
-depends=('tegra-bsp' 'v4l-utils')
+depends=('tegra-bsp' 'v4l-utils' 'mesa')
 
 prepare() {
 	git clone https://github.com/jocover/jetson-ffmpeg.git "${pkgbase}-${pkgver}"

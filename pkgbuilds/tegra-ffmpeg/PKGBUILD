@@ -5,7 +5,7 @@ pkgrel=3.1
 arch=('any')
 license=('GPL')
 url="https://ffmpeg.org/"
-makedepends=('git')
+makedepends=('git' 'wget')
 depends=('jetson-ffmpeg' 'tegra-bsp' 'v4l-utils')
 provides=("ffmpeg")
 
