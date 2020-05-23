@@ -1,5 +1,4 @@
 #!/usr/bin/bash
-uname -a
 
 zypper -y update && zypper -y install `cat base-pkgs`
 # for pkg in `find /pkgs/*.rpm -type f`; do

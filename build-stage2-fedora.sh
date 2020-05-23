@@ -1,11 +1,12 @@
 #!/usr/bin/bash
-uname -a
 
 dnf -y update && dnf -y groupinstall 'Basic Desktop' 'Xfce Desktop' && dnf -y install `cat base-pkgs`
 dnf -y remove xorg-x11-server-common iscsi-initiator-utils-iscsiuio iscsi-initiator-utils clevis-luks atmel-firmware kernel*
+
 for pkg in `find /pkgs/*.rpm -type f`; do
 	rpm -ivvh --force $pkg
 done
+
 dnf -y clean all && rm -r /pkgs
 
 # TODO: Make kernel rpm

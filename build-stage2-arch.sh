@@ -3,12 +3,15 @@
 # Pre install configurations
 ## Workaround for flakiness of `pt` mirror.
 sed -i 's/mirror.archlinuxarm.org/eu.mirror.archlinuxarm.org/g' /etc/pacman.d/mirrorlist
-echo -e "[switch]\nSigLevel = Optional\nServer = https://9net.org/l4t-arch/" >> /etc/pacman.conf
-sed 's/.*default-sample-rate.*/default-sample-rate = 48000/' -i /etc/pulse/daemon.conf
 
-# Configuring pacman
-pacman-key --init
-pacman-key --populate archlinuxarm
+## Arch switchroot repository
+echo -e "[switchrootarch]\nServer = https://archrepo.switchroot.org/" >> /etc/pacman.conf
+curl https://newrepo.switchroot.org/pubkey > /tmp/pubkey
+pacman-key --add /tmp/pubkey
+pacman-key --lsign-key C9DDF6AA7BAC41CF6B893FB892813F6A23DB6DFC
+
+## Audio fix
+sed 's/.*default-sample-rate.*/default-sample-rate = 48000/' -i /etc/pulse/daemon.conf
 
 # Installation
 ## Removing linux-aarch64 as we won't be needing this
@@ -21,7 +24,6 @@ until [[ ${i} == 0 ]] || pacman -Syu `cat /base-pkgs` --noconfirm; do
 	echo -e "\n\nPackages installation failed, retrying!\nRetry attempts left: ${i}"
 	let --i
 done
-
 
 for pkg in `find /pkgs/*.pkg.* -type f`; do
 	pacman -U $pkg --noconfirm
