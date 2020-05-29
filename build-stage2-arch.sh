@@ -19,26 +19,19 @@ pacman -R linux-aarch64 --noconfirm
 
 i=5
 echo -e "\n\nBeginning packages installation!\nRetry attempts left: ${i}"
-until [[ ${i} == 0 ]] || pacman -Syu `cat /base-pkgs` --noconfirm; do
-	pacman -Syu `cat /base-pkgs` --noconfirm
+until [[ ${i} == 0 ]] || pacman -Syu joycond-git switch-boot-files-bin systemd-suspend-modules xorg-server-tegra switch-config tegra-bsp linux-tegra --noconfirm; do
+	pacman -Syu joycond-git switch-boot-files-bin systemd-suspend-modules xorg-server-tegra switch-config tegra-bsp linux-tegra --noconfirm
 	echo -e "\n\nPackages installation failed, retrying!\nRetry attempts left: ${i}"
 	let --i
 done
 
-for pkg in `find /pkgs/*.pkg.* -type f`; do
-	pacman -U $pkg --noconfirm
-done
-
-yes | pacman -Scc
-
 # Post install configurations
+yes | pacman -Scc
 systemctl enable r2p bluetooth lightdm NetworkManager
 
 echo brcmfmac > /etc/suspend-modules.conf
 sed -i 's/#keyboard=/keyboard=onboard/' /etc/lightdm/lightdm-gtk-greeter.conf
 
 usermod -aG video,audio,wheel alarm
-
 ldconfig
-
 echo "Exit chroot."
