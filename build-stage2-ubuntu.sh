@@ -1,6 +1,6 @@
 #!/bin/bash
 
-pre () {
+pre() {
 	echo "Updating apt repos in rootfs"
 	sed -i 's/http:\/\/ports\.ubuntu\.com\/ubuntu-ports\//http:\/\/turul.canonical.com\//g' /etc/apt/sources.list
 	echo "Done!"
@@ -32,7 +32,11 @@ pre () {
 	echo "Done!"
 }
 
-post () {
+post() {
+	echo "Patching USB Gadget script"
+	sed -i 's+cp -r /proc/device-tree/chosen/plugin-manager \"${mntpoint}/version/plugin-manager\"+\#cp -r /proc/device-tree/chosen/plugin-manager \"${mntpoint}/version/plugin-manager\"+g' opt/nvidia/l4t-usb-device-mode/nv-l4t-usb-device-mode-start.sh
+	echo "Done!"
+
 	echo "Patching ubiquity"
 	mkdir -p /usr/lib/ubiquity/dm-scripts/oem
 	cp $SCRIPT_DIR/files/ubiquity-oem-script /usr/lib/ubiquity/dm-scripts/oem/switch-randr

@@ -1,22 +1,44 @@
 #!/usr/bin/bash
 
-dnf -y update && dnf -y groupinstall 'Basic Desktop' 'Xfce Desktop' && dnf -y install `cat base-pkgs`
-dnf -y remove xorg-x11-server-common iscsi-initiator-utils-iscsiuio iscsi-initiator-utils clevis-luks atmel-firmware kernel*
+pre() {
+	dnf -y update && dnf -y groupinstall 'Basic Desktop' 'Xfce Desktop'
+	dnf -y remove xorg-x11-server-common iscsi-initiator-utils-iscsiuio iscsi-initiator-utils clevis-luks atmel-firmware kernel*
+	dnf -y clean all
 
-for pkg in `find /pkgs/*.rpm -type f`; do
-	rpm -ivvh --force $pkg
+	# TODO: Make kernel rpm
+	echo '\nexclude=linux-firmware kernel* xorg-x11-server-* xorg-x11-drv-ati xorg-x11-drv-armsoc xorg-x11-drv-nouveau xorg-x11-drv-ati xorg-x11-drv-qxl xorg-x11-drv-fbdev' >> /etc/dnf/dnf.conf
+}
+
+post() {
+	systemctl enable r2p bluetooth lightdm NetworkManager
+	sed -i 's/#keyboard=/keyboard=onboard/' /etc/lightdm/lightdm-gtk-greeter.conf
+
+	useradd -m fedora
+	usermod -aG video,audio,wheel fedora
+	echo "fedora:fedora" | chpasswd && echo "root:root" | chpasswd
+}
+
+usage() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+	echo " --pre				Pre config"
+	echo " --post				Post config"
+    echo " --help               Show this help text"
+}
+
+# Parse arguments
+options=$(getopt -n "$0" -l "pre,post,help" -- "$@")
+
+if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+
+# Evaluate arguments
+eval set -- "${options}"
+while true; do
+    case "$1" in
+	--pre) pre; shift ;;
+    --post) post; shift ;;
+    ? | --help) usage; exit 0 ;;
+    -- ) shift; break ;;
+	* ) break ;;
+    esac
 done
-
-dnf -y clean all && rm -r /pkgs
-
-# TODO: Make kernel rpm
-echo '\nexclude=linux-firmware kernel* xorg-x11-server-* xorg-x11-drv-ati xorg-x11-drv-armsoc xorg-x11-drv-nouveau xorg-x11-drv-ati xorg-x11-drv-qxl xorg-x11-drv-fbdev' >> /etc/dnf/dnf.conf
-
-systemctl enable r2p bluetooth lightdm NetworkManager
-sed -i 's/#keyboard=/keyboard=onboard/' /etc/lightdm/lightdm-gtk-greeter.conf
-
-/usr/sbin/useradd -m fedora
-/usr/sbin/usermod -aG video,audio,wheel fedora
-echo "fedora:fedora" | /usr/bin/chpasswd && echo "root:root" | /usr/bin/chpasswd
-
-/usr/sbin/ldconfig
