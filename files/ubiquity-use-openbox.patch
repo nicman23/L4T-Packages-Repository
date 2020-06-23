@@ -1,0 +1,22 @@
+--- /tmp/l4t-builder-temp/Linux_for_Tegra/rootfs/usr/bin/ubiquity-dm	2019-02-04 16:13:42.000000000 +0000
++++ /home/me/ubiquity-dm	2019-04-25 20:42:00.272879004 +0100
+@@ -581,7 +581,9 @@
+                     except KeyError:
+                         os.environ['GTK_MODULES'] = 'gail'
+ 
+-            if osextras.find_on_path('gnome-shell'):
++            if osextras.find_on_path('openbox'):
++                wm_cmd = ['openbox']
++            elif osextras.find_on_path('gnome-shell'):
+                 wm_cmd = ['gnome-shell', '--sm-disable', '--mode=ubiquity']
+             elif osextras.find_on_path('budgie-wm'):
+                 wm_cmd = ['budgie-wm', '--sm-disable']
+@@ -595,8 +597,6 @@
+                 wm_cmd = ['matchbox-window-manager']
+             elif osextras.find_on_path('openbox-lubuntu'):
+                 wm_cmd = ['openbox-lubuntu']
+-            elif osextras.find_on_path('openbox'):
+-                wm_cmd = ['openbox']
+             elif osextras.find_on_path('compiz'):
+                 wm_cmd = ['compiz', '--sm-disable', 'decor', 'resize', 'place',
+                           'move']

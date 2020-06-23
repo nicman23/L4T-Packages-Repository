@@ -69,6 +69,7 @@ function doSetup()
     #Start IDE
     bashCommand "code-server --install-extension ms-azuretools.vscode-docker"
     bashCommand "code-server --install-extension laurenttreguier.rpm-spec"
+    bashCommand "code-server --install-extension foxundermoon.shell-format"
 
     docker restart $CONTAINER_NAME
 }

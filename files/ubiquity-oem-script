@@ -1,0 +1,14 @@
+#!/bin/bash
+
+forks() {
+		sleep 8
+		if [ "$(xrandr | grep ' connected ' | awk '{ print$1 }')" = "DSI-0" ]; then
+				xrandr --output DSI-0 --auto --rotate left
+		else
+				xrandr --output DP-0 --auto --output DSI-0 --off
+		fi
+}
+
+forks&
+disown
+

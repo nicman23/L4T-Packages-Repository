@@ -1,0 +1,15 @@
+--- /tmp/l4t-builder-temp/Linux_for_Tegra/rootfs/usr/bin/ubiquity-dm	2019-02-04 16:13:42.000000000 +0000
++++ ubiquity-dm	2019-04-20 19:12:15.751091423 +0100
+@@ -432,11 +432,8 @@
+                     background_image = background
+                     break
+ 
+-            accessibility = False
++            accessibility = True
+             if gsettings._gsettings_exists():
+-                accessibility = gsettings.get(
+-                    'org.gnome.desktop.interface', 'toolkit-accessibility',
+-                    self.username)
+ 
+                 # Set gsettings keys
+                 gsettings_keys = [

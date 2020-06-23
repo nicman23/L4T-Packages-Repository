@@ -33,6 +33,9 @@ pre() {
 }
 
 post() {
+	git clone https://github.com/Azkali/L4T-Packages-Repository/
+	SCRIPT_DIR="$PWD/L4T-Packages-Repository/"
+
 	echo "Patching USB Gadget script"
 	sed -i 's+cp -r /proc/device-tree/chosen/plugin-manager \"${mntpoint}/version/plugin-manager\"+\#cp -r /proc/device-tree/chosen/plugin-manager \"${mntpoint}/version/plugin-manager\"+g' opt/nvidia/l4t-usb-device-mode/nv-l4t-usb-device-mode-start.sh
 	echo "Done!"

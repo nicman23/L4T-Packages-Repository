@@ -1,0 +1,11 @@
+--- /tmp/l4t-builder-temp/Linux_for_Tegra/rootfs/etc/xdg/autostart/nvbackground.sh	2019-04-26 20:19:29.819556569 +0100
++++ ./nvbackground.sh	2019-04-26 21:34:55.184136315 +0100
+@@ -28,7 +28,7 @@
+ 
+ set -e
+ 
+-nv_background="/usr/share/backgrounds/NVIDIA_Wallpaper.jpg"
++nv_background="/usr/share/backgrounds/Switchroot_Wallpaper.png"
+ 
+ if [ -f "/home/${USER}/.local/share/applications/nvbackground" ]; then
+     exit 0

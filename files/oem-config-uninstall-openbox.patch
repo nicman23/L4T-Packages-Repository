@@ -1,0 +1,11 @@
+--- oem-config-remove-gtk	2019-04-25 19:38:19.000000000 +0000
++++ /usr/sbin/oem-config-remove-gtk	2019-04-25 19:38:57.000000000 +0000
+@@ -77,7 +77,7 @@
+ 
+ def main():
+     purge = []
+-    for pkg in ('ubiquity', 'ubiquity-casper',
++    for pkg in ('openbox', 'obconf', 'ubiquity', 'ubiquity-casper',
+                 'ubiquity-ubuntu-artwork', 'ubiquity-slideshow-ubuntu',
+                 'oem-config-slideshow-ubuntu', 'ubiquity-frontend-gtk'):
+         if glob.glob('/var/lib/dpkg/info/%s.list' % pkg):
