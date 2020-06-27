@@ -1,0 +1,6 @@
+[submodule "switch-l4t-configs"]
+	path = switch-l4t-configs
+	url = https://gitlab.com/switchroot/switch-l4t-configs.git
+[submodule "rpmbuilds/switch-configs/switch-l4t-configs"]
+	path = rpmbuilds/switch-configs/switch-l4t-configs
+	url = https://gitlab.com/switchroot/switch-l4t-configs.git
