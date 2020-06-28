@@ -3,6 +3,7 @@
 echo "Building Nvidia drivers"
 rpmdev-setuptree
 git clone https://github.com/Azkali/L4T-Packages-Repository /L4T-Packages-Repository
+git submodule update --init --recursive
 cd /L4T-Packages-Repository/rpmbuilds/nvidia-drivers-package
 dnf builddep nvidia-drivers-package.spec
 rpmbuild -ba nvidia-drivers-package.spec

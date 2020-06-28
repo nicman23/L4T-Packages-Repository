@@ -2,6 +2,7 @@
 
 echo "Building Nvidia drivers"
 git clone https://github.com/Azkali/L4T-Packages-Repository /L4T-Packages-Repository
+git submodule update --init --recursive
 cd /L4T-Packages-Repository/rpmbuilds/nvidia-drivers-package
 dnf builddep nvidia-drivers-package.spec
 rpmbuild -ba nvidia-drivers-package.spec
@@ -28,8 +29,7 @@ echo "keyboard=onboard" >> /etc/lightdm/lightdm-gtk-greeter.conf
 echo "Done!"
 
 echo "Configuring user..."
-groupadd wheel
 useradd -m -G wheel,video,audio,users -s /bin/bash suse
 echo "suse:suse" | chpasswd
-sed -i 's/# %wheel        ALL=(ALL) ALL/%wheel        ALL=(ALL) ALL/g' >> /etc/sudoers
+sed -i 's/# %wheel        ALL=(ALL) ALL/%wheel        ALL=(ALL) ALL/g' /etc/sudoers
 echo "Done!"
