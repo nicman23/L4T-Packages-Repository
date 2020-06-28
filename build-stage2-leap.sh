@@ -17,7 +17,7 @@ cp /usr/src/packages/RPMS/noarch/*.rpm /L4T-Packages-Repository/
 echo "Done!"
 
 echo "Installing XFCE, Nvidia drivers and switch config..."
-zypper -n install -y /L4T-Packages-Repository/*.rpm
+zypper --non-interactive --ignore-unknown --no-cd install --auto-agree-with-licenses --allow-unsigned-rpm /L4T-Packages-Repository/*.rpm
 zypper up -y && zypper -t pattern xfce && zypper -n clean all
 systemctl enable r2p bluetooth NetworkManager
 echo "Done!"
