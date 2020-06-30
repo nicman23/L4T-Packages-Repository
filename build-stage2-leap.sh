@@ -1,7 +1,6 @@
 #!/usr/bin/bash
 
 echo "Building Nvidia drivers"
-git clone https://github.com/Azkali/L4T-Packages-Repository /L4T-Packages-Repository
 cd /L4T-Packages-Repository/rpmbuilds/nvidia-drivers-package
 dnf builddep nvidia-drivers-package.spec
 rpmbuild -ba nvidia-drivers-package.spec
@@ -10,8 +9,8 @@ echo "Done!"
 
 echo "Building Switch configs"
 cd /L4T-Packages-Repository/rpmbuilds/switch-configs
-cp * /usr/src/packages/SOURCES/
-cp -r /L4T-Packages-Repository/rpmbuilds/switch-configs//switch-l4t-configs /usr/src/packages/SOURCES/
+git submodule update --init --recursive
+cp -r * /usr/src/packages/SOURCES/
 rpmbuild -ba switch-configs.spec
 cp /usr/src/packages/RPMS/noarch/*.rpm /L4T-Packages-Repository/
 echo "Done!"
@@ -20,6 +19,7 @@ echo "Installing XFCE, Nvidia drivers and switch config..."
 zypper --non-interactive --ignore-unknown --no-cd install --auto-agree-with-licenses --allow-unsigned-rpm /L4T-Packages-Repository/*.rpm
 zypper up -y && zypper -t pattern xfce && zypper -n clean all
 systemctl enable r2p bluetooth NetworkManager
+rm -r /L4T-Packages-Repository/
 echo "Done!"
 
 echo "Fixing boot stuff..."

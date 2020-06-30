@@ -6,7 +6,15 @@ License:			GPL
 URL:				"https://github.com/jocover/%{name}"
 Source0:			CMakeLists.txt
 Summary:			Jetson ffmpeg
-BuildRequires:		git cmake gcc-c++ tegra-bsp mesa-libEGL-devel
+BuildRequires:		git cmake gcc-c++ 
+
+%if 0%{?fedora}
+BuildRequires:	mesa-libEGL-devel
+%endif
+
+%if 0%{?suse_version}
+BuildRequires: Mesa-libEGL-devel
+%endif
 
 %description
 	Jetson ffmpeg
