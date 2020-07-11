@@ -8,7 +8,8 @@ All packages recipes for L4T distributions.
 | Fedora ( up to FC32 ) |
 | Gentoo                |
 | OpenSUSE Leap 15.0    |
-| Ubuntu Bionic 18.04  
+| Ubuntu Bionic 18.04   |
+
 | Planning to Support   |
 |-----------------------|
 | Arch variants         |
