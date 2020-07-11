@@ -31,7 +31,14 @@ Requires: nvidia-l4t-firmware >= %{version}-%{release}
 Requires: nvidia-l4t-init >= %{version}-%{release}
 Requires: nvidia-l4t-wayland >= %{version}-%{release}
 Requires: nvidia-l4t-x11 >= %{version}-%{release}
+
+%if 0%{?fedora}
+Requires: libXext
+%endif
+
+%if 0%{?suse_version}
 Requires: libXext6
+%endif
 
 %description 3d-core
 3D Core drivers for Jetson nano
@@ -143,7 +150,7 @@ multimedia drivers for Jetson nano
 %package multimedia-utils
 Summary: Nvidia L4T multimedia-utils drivers
 Requires: nvidia-l4t-core >= %{version}-%{release}
-Requires: libdatrie1
+
 Requires: pango
 
 %if 0%{?sle_version} == 150200 && 0%{?is_opensuse}
@@ -160,6 +167,7 @@ Requires: fontconfig
 
 %if 0%{?suse_version}
 Requires: libharfbuzz-icu0
+Requires: libdatrie1
 Requires: libpixman-1-0
 Requires: libXau6
 Requires: xorg-x11-libXrender
@@ -171,12 +179,13 @@ Requires: libfontconfig1
 %endif
 
 %if 0%{?fedora}
+Requires: libdatrie
 Requires: harfbuzz
 Requires: pixman
 Requires: libXau
 Requires: libXrender
 Requires: zlib
-Requires: libfontconfig1
+Requires: fontconfig
 %endif
 
 %description multimedia-utils

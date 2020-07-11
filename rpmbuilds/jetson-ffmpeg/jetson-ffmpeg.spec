@@ -23,6 +23,7 @@ BuildRequires: Mesa-libEGL-devel
 	git clone %url
 	cd %name
 
+	git checkout 7d675d4
 	# https://github.com/jocover/jetson-ffmpeg/issues/34/
 	cp %SOURCE0 .
 	mkdir build

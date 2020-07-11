@@ -1,9 +1,9 @@
 #!/bin/bash
 
-CONTAINER_NAME="fedora-rpmbuilds-ide"
+CONTAINER_NAME="l4t-packages-ide"
 WORKSPACE_DIRECTORY="//root/workspace"
 GIT_REPO_TO_CLONE="https://github.com/Azkali/L4T-Packages-Repository.git"
-IDE_PORT="9092"
+IDE_PORT="9093"
 
 START_COMMAND="code-server --auth none --bind-addr 0.0.0.0:$IDE_PORT \"$WORKSPACE_DIRECTORY\" || tail -f /dev/null"
 
@@ -16,7 +16,7 @@ function bashCommand()
 function installDependency()
 {
     DEPENDENCY="$1"
-    bashCommand "command -v $DEPENDENCY || dnf install -y $DEPENDENCY"
+    bashCommand "command -v $DEPENDENCY || apt-get install -y $DEPENDENCY"
 }
 
 function doSetup()
@@ -30,11 +30,11 @@ function doSetup()
             yes)
             docker run -d -p $IDE_PORT:$IDE_PORT \
                         --volume //var/run/docker.sock:/var/run/docker.sock \
-                        --volume $(dirname $(readlink -fm $0)):/root/workspace \
+                        --volume $(dirname $(dirname $(readlink -fm $0))):/root/workspace \
                         --user root \
                         --workdir //root \
                         --name $CONTAINER_NAME \
-                        fedora:32 \
+                        ubuntu:19.10 \
                         bash -c "$START_COMMAND"
             ;;
             no)
@@ -43,7 +43,7 @@ function doSetup()
                         --user root \
                         --workdir //root \
                         --name $CONTAINER_NAME \
-                        fedora:32 \
+                        ubuntu:19.10 \
                         bash -c "$START_COMMAND"
             ;;
             *)
@@ -54,11 +54,11 @@ function doSetup()
         break
     done
 
-    bashCommand "dnf update -y"
+    bashCommand "apt-get update -y"
     installDependency "git"
     installDependency "curl"
-    installDependency "docker.ce"
- 
+    installDependency "docker.io"
+
     #Install IDE - Code Server
     bashCommand "curl -fsSL https://code-server.dev/install.sh | sh"
 
@@ -69,6 +69,7 @@ function doSetup()
     #Start IDE
     bashCommand "code-server --install-extension ms-azuretools.vscode-docker"
     bashCommand "code-server --install-extension laurenttreguier.rpm-spec"
+    bashCommand "code-server --install-extension foxundermoon.shell-format"
 
     docker restart $CONTAINER_NAME
 }

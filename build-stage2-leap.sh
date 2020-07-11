@@ -30,6 +30,6 @@ echo "Done!"
 
 echo "Configuring user..."
 useradd -m -G wheel,video,audio,users -s /bin/bash suse
-echo "suse:suse" | chpasswd
-sed -i 's/# %wheel        ALL=(ALL) ALL/%wheel        ALL=(ALL) ALL/g' /etc/sudoers
+echo "suse:suse" | chpasswd && echo "root:root" | chpasswd
+sed -i 's/#%wheel        ALL=(ALL) ALL/%wheel        ALL=(ALL) ALL/g' /etc/sudoers
 echo "Done!"
