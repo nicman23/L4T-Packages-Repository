@@ -2,7 +2,7 @@
 
 # Pre install configurations
 ## Workaround for flakiness of `pt` mirror.
-# sed -i 's/mirror.archlinuxarm.org/eu.mirror.archlinuxarm.org/g' /etc/pacman.d/mirrorlist
+# sed -i 's/http://mirror.archlinuxarm.org/eu.mirror.archlinuxarm.org/g' /etc/pacman.d/mirrorlist
 
 ## Arch switchroot repository
 echo -e "[switchrootarch]\nServer = https://archrepo.switchroot.org/" >> /etc/pacman.conf
@@ -16,13 +16,9 @@ sed 's/.*default-sample-rate.*/default-sample-rate = 48000/' -i /etc/pulse/daemo
 # Installation
 pacman -R linux-aarch64 --noconfirm
 
-i=5
-echo -e "\n\nBeginning packages installation!\nRetry attempts left: ${i}"
-until [[ ${i} == 0 ]] || pacman -Syu joycond-git switch-boot-files-bin systemd-suspend-modules xorg-server-tegra switch-config tegra-bsp linux-tegra --noconfirm; do
-	pacman -Syu joycond-git switch-boot-files-bin systemd-suspend-modules xorg-server-tegra switch-config tegra-bsp linux-tegra --noconfirm
-	echo -e "\n\nPackages installation failed, retrying!\nRetry attempts left: ${i}"
-	let --i
-done
+echo -e "\n\nBeginning packages installation!"
+# pacman -Syyu joycond-git switch-boot-files-bin systemd-suspend-modules xorg-server-tegra switch-config tegra-bsp linux-tegra --noconfirm
+pacman -Syyu jetson-ffmpeg tegra-ffmpeg tegra-bsp --noconfirm
 
 # Post install configurations
 yes | pacman -Scc

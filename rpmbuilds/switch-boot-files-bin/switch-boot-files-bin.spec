@@ -11,20 +11,31 @@ License:        GPLv3+
 Summary:		Switch boot files
 BuildRequires:	uboot-tools
 
+
+%if 0%{?suse_version}
+%define distro leap
+%endif
+
+
+%if 0%{?suse_version}
+%define distro fedora
+%endif
+
 %description
 	Switch boot files
 
 %prep
-	mkdir -p %buildroot/boot/bootloader/ini %buildroot/boot/switchroot/fedora/
+	mkdir -p %buildroot/boot/bootloader/ini %buildroot/boot/switchroot/%distro/
 
 %install
-	install %SOURCE0 %buildroot/boot/bootloader/ini/fedora.ini
-	install %SOURCE1 %SOURCE2 %buildroot/boot/switchroot/fedora/
-	mkimage -A arm -T script -O linux -d %SOURCE1 %buildroot/boot/switchroot/fedora/boot.scr
+	sed -i 's/switchroot\/*\//switchroot\/%distro\//g' %SOURCE0
+	install %SOURCE0 %buildroot/boot/bootloader/ini/%distro.ini
+	install %SOURCE1 %SOURCE2 %buildroot/boot/switchroot/%distro/
+	mkimage -A arm -T script -O linux -d %SOURCE1 %buildroot/boot/switchroot/%dist/boot.scr
 
-	mkdir -p %buildroot/boot/l4t-fedora/
+	mkdir -p %buildroot/boot/%distro
 	cp -r bootloader %buildroot/boot/
-	cp -r l4t-fedora/{boot.scr,coreboot.rom} %buildroot/boot/l4t-fedora
+	cp -r %distro/{boot.scr,coreboot.rom} %buildroot/boot/%distro
 
 %files
 /boot/*

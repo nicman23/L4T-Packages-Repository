@@ -267,8 +267,9 @@ wget %{url} -P %{_builddir}/%{nv_dir}
 cd %{_builddir}/%{nv_dir}
 
 tar xvf Tegra210_Linux_R%{version}.%{release}_aarch64.tbz2
-tar xvf Linux_for_Tegra/nv_tegra/nvidia_drivers.tbz2
 tar xvf Linux_for_Tegra/nv_tegra/config.tbz2
+tar xvf Linux_for_Tegra/nv_tegra/nvidia_drivers.tbz2
+tar xvf Linux_for_Tegra/nv_tegra/weston.tbz2
 rm Tegra210_Linux_R%{version}.%{release}_aarch64.tbz2
 
 %install
@@ -280,6 +281,7 @@ mkdir -p %{buildroot}/usr/lib64/systemd/
 
 sed -e 's_/usr/lib/aarch64-linux-gnu_/usr/lib64/aarch64-linux-gnu/_' -i %{_builddir}/%{nv_dir}/etc/nv_tegra_release
 sed -e 's_/usr/lib/_/usr/lib64/_' -i %{_builddir}/%{nv_dir}/etc/nv_tegra_release
+
 cp %{_builddir}/%{nv_dir}/etc/nv_tegra_release %{buildroot}/etc/nv_tegra_release
 cp -r %{_builddir}/%{nv_dir}/etc/ld.so.conf.d %{buildroot}/etc/ld.so.conf.d
 
@@ -293,6 +295,18 @@ cp %{_builddir}/%{nv_dir}/etc/asound.conf.* %{buildroot}/etc/
 # Get the udev rules & xorg config.
 cp -r %{_builddir}/%{nv_dir}/etc/udev/* %{buildroot}/etc/udev/
 cp -r %{_builddir}/%{nv_dir}/etc/X11/xorg.conf %{buildroot}/etc/X11/
+cp %{_builddir}/%{nv_dir}/etc/X11/xorg.conf.jetson_e %{buildroot}/etc/X11/
+
+cp -r %{_builddir}/%{nv_dir}/etc/lightdm/ %{buildroot}/etc/
+cp -r %{_builddir}/%{nv_dir}/etc/default/ %{buildroot}/etc/
+cp -r %{_builddir}/%{nv_dir}/etc/nv/ %{buildroot}/etc/
+cp -r %{_builddir}/%{nv_dir}/etc/nvidia-container-runtime/ %{buildroot}/etc/
+
+cp %{_builddir}/%{nv_dir}/etc/enctune.conf %{buildroot}/etc/
+cp %{_builddir}/%{nv_dir}/etc/modprobe.d/bcmdhd.conf %{buildroot}/etc/modprobe.d/
+cp %{_builddir}/%{nv_dir}/etc/nvphsd.conf %{buildroot}/etc/
+cp %{_builddir}/%{nv_dir}/etc/nvphsd_common.conf %{buildroot}/etc/
+cp %{_builddir}/%{nv_dir}/etc/sysctl.d/90-tegra-settings.conf %{buildroot}/etc/
 
 # Copy usr/lib/aarch64-linux-gnu -> usr/lib64/aarch64-linux-gnu.
 cp -r %{_builddir}/%{nv_dir}/usr/lib/aarch64-linux-gnu/ %{buildroot}/usr/lib64/
@@ -314,7 +328,7 @@ cp -r %{_builddir}/%{nv_dir}/usr/sbin/ %{buildroot}/usr/
 
 # pass through
 cp -r %{_builddir}/%{nv_dir}/var/ %{buildroot}/var/
-cp -r %{_builddir}/%{nv_dir}/opt/ %{buildroot}/opt/ 
+cp -r %{_builddir}/%{nv_dir}/opt/ %{buildroot}/opt/
 
 [[ ! -e %{buildroot}/usr/lib/firmware/gm20b ]] && mkdir %{buildroot}/usr/lib/firmware/gm20b
 pushd %{buildroot}/usr/lib/firmware/gm20b > /dev/null 2>&1
@@ -351,6 +365,9 @@ ln -sfn /usr/lib64/aarch64-linux-gnu/tegra/libnvbufsurface.so.1.0.0 %{buildroot}
 ln -sfn /usr/lib64/aarch64-linux-gnu/tegra/libnvbufsurftransform.so.1.0.0 %{buildroot}/usr/lib64/aarch64-linux-gnu/tegra/libnvbufsurftransform.so
 ln -sfn /usr/lib64/aarch64-linux-gnu/tegra/libnvid_mapper.so.1.0.0 %{buildroot}/usr/lib64/aarch64-linux-gnu/tegra/libnvid_mapper.so
 
+cp -r %{_builddir}/%{nv_dir}/etc/xdg/weston/weston.ini %{buildroot}/etc/xdg/weston
+cp -r %{_builddir}/%{nv_dir}/usr/lib64/aarch64-linux-gnu/tegra/weston/ %{buildroot}/usr/usr/lib64/aarch64-linux-gnu/tegra/
+cp -r %{_builddir}/%{nv_dir}/usr/share/weston/ %{buildroot}/usr/share/
 %post 3d-core
 echo "/usr/lib/aarch64-linux-gnu/tegra-egl" > \
 	/usr/lib/aarch64-linux-gnu/tegra-egl/ld.so.conf
@@ -484,7 +501,7 @@ groupadd -r "weston-launch"
 %files configs
 /etc/systemd/nvweston.sh
 /etc/systemd/system/nvweston.service
-# /etc/systemd/system/multi-user.target.wants/nvweston.service
+/etc/systemd/system/multi-user.target.wants/nvweston.service
 /usr/share/backgrounds/
 /usr/share/doc/procps/copyright.compliant
 /usr/share/doc/udev/copyright.compliant
@@ -525,15 +542,15 @@ groupadd -r "weston-launch"
 %files init
 /etc/asound.conf.tegrahda
 /etc/asound.conf.tegrasndt210ref
-# /etc/default/rng-tools
-# /etc/enctune.conf
-# /etc/lightdm/lightdm.conf.d/50-nvidia.conf
-# /etc/modprobe.d/bcmdhd.conf
-# /etc/nv/nvfirstboot
-# /etc/nvidia-container-runtime/host-files-for-container.d/l4t.csv
-# /etc/nvphsd.conf
-# /etc/nvphsd_common.conf
-# /etc/sysctl.d/90-tegra-settings.conf
+/etc/default/rng-tools
+/etc/enctune.conf
+/etc/lightdm/lightdm.conf.d/50-nvidia.conf
+/etc/modprobe.d/bcmdhd.conf
+/etc/nv/nvfirstboot
+/etc/nvidia-container-runtime/host-files-for-container.d/l4t.csv
+/etc/nvphsd.conf
+/etc/nvphsd_common.conf
+/etc/sysctl.d/90-tegra-settings.conf
 /etc/ld.so.conf.d/nvidia-tegra.conf
 /etc/ld.so.conf.d/nvidia-tegra-egl.conf
 /etc/systemd/nv.sh
@@ -686,13 +703,49 @@ groupadd -r "weston-launch"
 /usr/share/egl/egl_external_platform.d/nvidia_wayland.json
 
 # %files weston
-# /etc/xdg/weston/weston.ini
-# /usr/lib64/aarch64-linux-gnu/tegra/weston/
-# /usr/share/weston/
+/etc/xdg/weston/weston.ini
+/usr/lib64/aarch64-linux-gnu/tegra/weston/
+/usr/share/weston/
+/usr/bin/EGLWInputEventExample           
+/usr/bin/weston-calibrator               
+/usr/bin/weston-eventdemo               
+/usr/bin/weston-multi-resource           
+/usr/bin/weston-simple-touch
+/usr/bin/EGLWLMockNavigation             
+/usr/bin/weston-clickdot                 
+/usr/bin/weston-flower                   
+/usr/bin/weston-resizor                  
+/usr/bin/weston-smoke
+/usr/bin/LayerManagerControl             
+/usr/bin/weston-cliptest                 
+/usr/bin/weston-fullscreen               
+/usr/bin/weston-scaler                   
+/usr/bin/weston-stacking
+/usr/bin/simple-weston-client            
+/usr/bin/weston-content-protection       
+/usr/bin/weston-image                    
+/usr/bin/weston-simple-dmabuf-egldevice  
+/usr/bin/weston-subsurfaces
+/usr/bin/spring-tool                     
+/usr/bin/weston-debug                    
+/usr/bin/weston-info                     
+/usr/bin/weston-simple-egl               
+/usr/bin/weston-terminal
+/usr/bin/weston                          
+/usr/bin/weston-dnd                      
+/usr/bin/weston-launch                   
+/usr/bin/weston-simple-shm               
+/usr/bin/weston-transformed
+/usr/lib/aarch64-linux-gnu/libilmClient.so.2.2.0     
+/usr/lib/aarch64-linux-gnu/libilmControl.so.2.2.0    
+/usr/lib/aarch64-linux-gnu/libweston-6.so.0       
+/usr/lib/aarch64-linux-gnu/libilmCommon.so.2.2.0     
+/usr/lib/aarch64-linux-gnu/libilmInput.so.2.2.0      
+/usr/lib/aarch64-linux-gnu/libweston-desktop-6.so.0
 
 %files x11
 /etc/X11/xorg.conf
-# /etc/X11/xorg.conf.jetson_e
+/etc/X11/xorg.conf.jetson_e
 
 %files xusb-firmware
 /usr/lib/firmware/tegra21x_xusb_firmware

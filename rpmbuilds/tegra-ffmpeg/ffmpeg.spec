@@ -99,6 +99,9 @@ Source0:        ffmpeg-%{?branch}%{date}.tar.bz2
 Source0:        http://ffmpeg.org/releases/ffmpeg-%{version}.tar.xz
 %endif
 Requires:       %{name}-libs%{?_isa} = %{version}-%{release}
+
+
+%if 0%{?fedora}
 %{?_with_cuda:BuildRequires: cuda-minimal-build-%{_cuda_version_rpm} cuda-drivers-devel}
 %{?_with_libnpp:BuildRequires: pkgconfig(nppc-%{_cuda_version})}
 BuildRequires:  alsa-lib-devel
@@ -188,7 +191,131 @@ BuildRequires:  zimg-devel >= 2.7.0
 BuildRequires:  zlib-devel
 %{?_with_zmq:BuildRequires: zeromq-devel}
 %{!?_without_zvbi:BuildRequires: zvbi-devel}
-%{!?_without_nvmpi:BuildRequires: jetson-ffmpeg}
+%endif
+
+%if 0%{?suse_version}
+BuildRequires:  ladspa-devel
+BuildRequires:  libgsm-devel
+BuildRequires:  libmp3lame-devel
+%if %{with mysofa}
+BuildRequires:  libmysofa-devel
+%endif
+BuildRequires:  nasm
+BuildRequires:  pkg-config
+BuildRequires:  pkgconfig(alsa)
+%if %{with libaom}
+BuildRequires:  pkgconfig(aom)
+%endif
+BuildRequires:  pkgconfig(bzip2)
+BuildRequires:  pkgconfig(celt) >= 0.11.0
+%if %{with codec2}
+BuildRequires:  pkgconfig(codec2)
+%endif
+%if 0%{?suse_version} >= 1550
+BuildRequires:  pkgconfig(dav1d)
+%endif
+BuildRequires:  pkgconfig(enca)
+BuildRequires:  pkgconfig(fontconfig) >= 2.4.2
+BuildRequires:  pkgconfig(freetype2)
+BuildRequires:  pkgconfig(fribidi) >= 0.19.0
+BuildRequires:  pkgconfig(gnutls)
+BuildRequires:  pkgconfig(jack)
+BuildRequires:  pkgconfig(libass)
+BuildRequires:  pkgconfig(libbluray)
+BuildRequires:  pkgconfig(libbs2b)
+BuildRequires:  pkgconfig(libcdio)
+BuildRequires:  pkgconfig(libcdio_paranoia)
+BuildRequires:  pkgconfig(libdc1394-2)
+BuildRequires:  pkgconfig(libdrm)
+BuildRequires:  pkgconfig(libgme)
+BuildRequires:  pkgconfig(liboil-0.3) >= 0.3.15
+BuildRequires:  pkgconfig(libopenjp2) >= 2.1.0
+BuildRequires:  pkgconfig(libopenjpeg)
+%if %{with openmpt}
+BuildRequires:  pkgconfig(libopenmpt)
+%endif
+BuildRequires:  pkgconfig(libpng)
+BuildRequires:  pkgconfig(libpulse)
+BuildRequires:  pkgconfig(libraw1394)
+BuildRequires:  pkgconfig(libssh)
+BuildRequires:  pkgconfig(libv4l2)
+BuildRequires:  pkgconfig(libva) >= 0.35.0
+BuildRequires:  pkgconfig(libva-drm)
+BuildRequires:  pkgconfig(libva-x11)
+BuildRequires:  pkgconfig(libwebp) >= 0.4
+BuildRequires:  pkgconfig(libxml-2.0)
+%if %{with zmq}
+BuildRequires:  pkgconfig(libzmq)
+%endif
+%if %{with lv2}
+BuildRequires:  pkgconfig(lilv-0)
+%endif
+BuildRequires:  pkgconfig(ogg)
+BuildRequires:  pkgconfig(opus)
+%if %{with rubberband}
+BuildRequires:  pkgconfig(rubberband)
+%endif
+BuildRequires:  pkgconfig(sdl2)
+%if %{with soxr}
+BuildRequires:  pkgconfig(soxr)
+%endif
+BuildRequires:  pkgconfig(speex)
+%if %{with srt}
+BuildRequires:  pkgconfig(srt)
+%endif
+BuildRequires:  pkgconfig(theora) >= 1.1
+BuildRequires:  pkgconfig(twolame)
+BuildRequires:  pkgconfig(vdpau)
+%if %{with vidstab}
+BuildRequires:  pkgconfig(vidstab) >= 0.98
+%endif
+BuildRequires:  pkgconfig(vorbis)
+BuildRequires:  pkgconfig(vpx) >= 1.4.0
+BuildRequires:  pkgconfig(x11)
+BuildRequires:  pkgconfig(xcb)
+BuildRequires:  pkgconfig(xcb-render)
+BuildRequires:  pkgconfig(xcb-shape)
+BuildRequires:  pkgconfig(xcb-shm)
+BuildRequires:  pkgconfig(xcb-xfixes)
+BuildRequires:  pkgconfig(xext)
+BuildRequires:  pkgconfig(xfixes)
+%if 0%{?suse_version} >= 1550
+%ifarch x86_64
+BuildRequires:  pkgconfig(libmfx)
+%endif
+%endif
+%if %{with zimg}
+BuildRequires:  pkgconfig(zimg)
+%endif
+BuildRequires:  pkgconfig(zlib)
+BuildRequires:  pkgconfig(zvbi-0.2) >= 0.2.28
+%if %{with fdk_aac_dlopen}
+BuildRequires:  pkgconfig(fdk-aac)
+%endif
+%if %{with librtmp}
+BuildRequires:  pkgconfig(librtmp)
+%endif
+%if %{with nvcodec}
+BuildRequires:  pkgconfig(ffnvcodec)
+%endif
+%if %{with xvid}
+BuildRequires:  libxvidcore-devel
+%endif
+%if %{with opencore}
+BuildRequires:  pkgconfig(opencore-amrnb)
+%endif
+%if %{with amrwb}
+BuildRequires:  pkgconfig(vo-amrwbenc)
+%endif
+%if %{with x264}
+BuildRequires:  pkgconfig(x264)
+%endif
+%if %{with x265}
+BuildRequires:  pkgconfig(x265)
+%endif
+%endif
+
+%{!?_without_nvmpi:Requires: jetson-ffmpeg}
 
 %description
 FFmpeg is a complete and free Internet live audio and video
@@ -336,10 +463,11 @@ echo "git-snapshot-%{?branch}%{date}-rpmfusion" > VERSION
 sed -i "s|check_host_cflags -O3|check_host_cflags %{optflags}|" configure
 mkdir -p _doc/examples
 cp -pr doc/examples/{*.c,Makefile,README} _doc/examples/
+
 # nvmpi support 
 %if 0%{!?_without_nvmpi:1}
-  wget https://github.com/jocover/jetson-ffmpeg/raw/master/ffmpeg_nvmpi.patch
-  git apply ffmpeg_nvmpi.patch
+wget https://github.com/jocover/jetson-ffmpeg/raw/master/ffmpeg_nvmpi.patch
+git apply ffmpeg_nvmpi.patch
 %endif
 
 %build
